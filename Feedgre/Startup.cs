@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Feedgre.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Feedgre
 {
@@ -16,6 +18,11 @@ namespace Feedgre
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            using (var client = new FeedDBContext())
+            {
+                client.Database.EnsureCreated();
+            }
         }
 
         public IConfiguration Configuration { get; }
@@ -24,6 +31,7 @@ namespace Feedgre
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddEntityFrameworkSqlite().AddDbContext<FeedDBContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
