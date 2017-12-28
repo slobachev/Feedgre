@@ -7,6 +7,6 @@ namespace Feedgre.Models
 {
     interface IFeedParser
     {
-        IList<FeedItem> ParseFeed();
+        IList<FeedItem> ParseFeed(string url);
     }
 }

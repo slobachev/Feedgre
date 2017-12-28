@@ -10,7 +10,7 @@ namespace Feedgre.Models
     /// </summary>
     public class FeedItem
     {
-        public Uri Link { get; set; }
+        public string Link { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public string Description { get; set; }
@@ -18,8 +18,8 @@ namespace Feedgre.Models
         public string Author { get; set; }
 
         /// <summary>
-        /// The images of the <see cref="FeedItem"/>.
+        /// The image of the <see cref="FeedItem"/>.
         /// </summary>
-        public IEnumerable<Uri> Images { get; set; }
+        public string Image { get; set; }
     }
 }
