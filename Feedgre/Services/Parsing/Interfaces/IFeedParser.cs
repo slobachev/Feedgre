@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Feedgre.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Feedgre.Models
+namespace Feedgre.Services.Parsing
 {
-    interface IFeedParser
+    public interface IFeedParser
     {
         IList<FeedItem> ParseFeed(string url);
     }

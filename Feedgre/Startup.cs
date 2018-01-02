@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Feedgre.Models;
 using Microsoft.EntityFrameworkCore;
+using Feedgre.Models.Repositories;
+using Feedgre.Services.Parsing;
 
 namespace Feedgre
 {
@@ -31,18 +33,30 @@ namespace Feedgre
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddMemoryCache();
+            services.AddSingleton<IFeedParser, RssParser>();
+            services.AddSingleton<IFeedParser, AtomParser>();
             services.AddEntityFrameworkSqlite().AddDbContext<FeedDBContext>();
+            services.AddTransient<IFeedCollectionRepository, FeedCollectionRepository>();
+            services.AddTransient<IFeedRepository, FeedRepository>();
+            services.AddTransient<IServiceProvider, ServiceProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            loggerFactory.AddConsole(Configuration.GetSection("Logging.Console"));
+
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=collections}/{action=Get}/{id?}");
+            });
         }
     }
 }

@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace Feedgre.Models
 {
-    public class FeedCollection
+    public class Subscription
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public int FeedId { get; set; }
+        public int CollectionId { get; set; }
     }
 }

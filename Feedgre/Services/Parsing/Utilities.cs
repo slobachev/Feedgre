@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Feedgre.Parsing
+namespace Feedgre.Services.Parsing
 {
     public static class Utilities
     {
