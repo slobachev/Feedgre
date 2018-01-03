@@ -12,6 +12,6 @@ namespace Feedgre.Models
         public string Description { get; set; }
         public string Link { get; set; }
         public int Followers { get; set; }
-        public string Type { get; set; }
+        public FeedType Type { get; set; }
     }
 }

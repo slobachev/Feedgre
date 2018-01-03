@@ -62,10 +62,10 @@ namespace Feedgre.Controllers
                 // Key not in cache, so get data.
                 switch (feed.Type)
                 {
-                    case "RSS":
+                    case FeedType.RSS:
                         feedItems = _rssParser.ParseFeed(feed.Link);
                         break;
-                    case "Atom":
+                    case FeedType.Atom:
                         feedItems = _atomParser.ParseFeed(feed.Link);
                         break;
                     default:

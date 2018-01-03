@@ -2,7 +2,7 @@
 {
     public enum FeedType
     {
-        RSS,
+        RSS = 1,
         Atom
     }
 }

@@ -75,10 +75,10 @@ namespace Feedgre.Controllers
                 {
                     switch (feed.Type)
                     {
-                        case "RSS":
+                        case FeedType.RSS:
                             feedItems.AddRange(_rssParser.ParseFeed(feed.Link));
                             break;
-                        case "Atom":
+                        case FeedType.Atom:
                             feedItems.AddRange(_atomParser.ParseFeed(feed.Link));
                             break;
                         default:
