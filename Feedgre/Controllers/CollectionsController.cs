@@ -11,6 +11,7 @@ using Feedgre.Services.Parsing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Feedgre.Services.Parsing.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Feedgre.Controllers
 {
@@ -34,6 +35,7 @@ namespace Feedgre.Controllers
         }
         // GET: api/collections
         [HttpGet]
+        [Authorize("read:collections")]
         public IActionResult Get()
         {
             _logger.LogInformation("Retrieved all collections");
@@ -42,6 +44,7 @@ namespace Feedgre.Controllers
 
         // GET: api/collections/5
         [HttpGet("{id}")]
+        [Authorize]
         public IActionResult Get(int id)
         {
             var feeds = _repository.GetFeeds(id);
@@ -55,6 +58,7 @@ namespace Feedgre.Controllers
 
         // GET: api/collections/5/all
         [HttpGet("{id}/all")]
+        [Authorize]
         public IActionResult GetAllFeed(int id)
         {
             var feeds = _repository.GetFeeds(id);
@@ -106,6 +110,7 @@ namespace Feedgre.Controllers
 
         // POST: api/collections/1
         [HttpPost("{id}")]
+        [Authorize("write:collections")]
         public IActionResult AddFeed(int id, int feedId)
         {
             var feeds = _repository.GetFeeds(id);
@@ -132,6 +137,7 @@ namespace Feedgre.Controllers
 
         // POST: api/collections
         [HttpPost]
+        [Authorize("write:collections")]
         public IActionResult CreateCollection(FeedCollection item)
         {
             if (item == null)
@@ -157,6 +163,7 @@ namespace Feedgre.Controllers
 
         // PUT: api/collections/5
         [HttpPut("{id}")]
+        [Authorize("write:collections")]
         public IActionResult UpdateCollection(int id, [FromBody]FeedCollection item)
         {
             if (!ModelState.IsValid)
@@ -186,6 +193,7 @@ namespace Feedgre.Controllers
 
         // DELETE: api/collections/5
         [HttpDelete("{id}")]
+        [Authorize("write:collections")]
         public IActionResult DeleteCollection(int id)
         {
             try
