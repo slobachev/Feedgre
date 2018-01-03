@@ -77,6 +77,7 @@ namespace Feedgre
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging.Console"));
