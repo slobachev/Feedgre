@@ -10,12 +10,12 @@ namespace Feedgre.Models.Repositories
     {
         IEnumerable<FeedCollection> GetFeedCollections();
         FeedCollection GetCollectionByID(int collectionId);
-        void InsertCollection(FeedCollection student);
-        void DeleteCollection(int collectionID);
-        void UpdateCollection(FeedCollection collection);
+        int CreateCollection(FeedCollection student);
+        int DeleteCollection(int collectionID);
+        int UpdateCollection(FeedCollection collection);
         IEnumerable<Feed> GetFeeds(int id);
-        void Subscribe(int collectionId, int feedId);
+        int Subscribe(int collectionId, int feedId);
         int GetIdByTitle(string title);
-        void Save();
+        int Save();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,13 @@ namespace Feedgre.Models.Repositories
             _dbContext = dBContext;
         }
 
-        public void DeleteCollection(int collectionID)
+        public int DeleteCollection(int collectionID)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(new FeedCollection()
+            {
+                Id = collectionID
+            }).State = EntityState.Deleted;
+            return _dbContext.SaveChanges();
         }
 
         public IEnumerable<Feed> GetFeeds(int id)
@@ -50,12 +55,13 @@ namespace Feedgre.Models.Repositories
             return _dbContext.FeedCollection.ToList();
         }
 
-        public void InsertCollection(FeedCollection item)
+        public int CreateCollection(FeedCollection item)
         {
             _dbContext.FeedCollection.Add(item);
+            return _dbContext.SaveChanges();
         }
 
-        public void Subscribe(int collectionId, int feedId)
+        public int Subscribe(int collectionId, int feedId)
         {
             var sub = new Subscription
             {
@@ -63,16 +69,30 @@ namespace Feedgre.Models.Repositories
                 CollectionId = collectionId
             };
             _dbContext.Subscriptions.Add(sub);
+            return _dbContext.SaveChanges();
         }
 
-        public void Save()
+        public int Save()
         {
-            _dbContext.SaveChanges();
+            try
+            {
+                return _dbContext.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                //Thrown when database update fails
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public void UpdateCollection(FeedCollection collection)
+        public int UpdateCollection(FeedCollection collection)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(collection).State = EntityState.Modified;
+            return _dbContext.SaveChanges();
         }
 
         public int GetIdByTitle(string title)

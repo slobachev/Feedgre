@@ -40,7 +40,6 @@ namespace Feedgre
             services.AddEntityFrameworkSqlite().AddDbContext<FeedDBContext>();
             services.AddTransient<IFeedCollectionRepository, FeedCollectionRepository>();
             services.AddTransient<IFeedRepository, FeedRepository>();
-            services.AddTransient<IServiceProvider, ServiceProvider>();
             services.AddSingleton<IParserFactory, ParserFactory>();
         }
 

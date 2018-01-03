@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +16,13 @@ namespace Feedgre.Models.Repositories
             _dbContext = dBContext;
         }
 
-        public void DeleteFeed(int feedID)
+        public int DeleteFeed(int feedID)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(new Feed()
+            {
+                Id = feedID
+            }).State = EntityState.Deleted;
+            return _dbContext.SaveChanges();
         }
 
         public Feed GetFeedByID(int feedId)
@@ -31,19 +36,44 @@ namespace Feedgre.Models.Repositories
         }
 
 
-        public void InsertFeed(Feed feed)
+        public int CreateFeed(Feed feed)
         {
-            throw new NotImplementedException();
+            _dbContext.Feeds.Add(feed);
+            return _dbContext.SaveChanges();
         }
 
-        public void Save()
+        public int Save()
         {
-            _dbContext.SaveChanges();
+            try
+            {
+                return _dbContext.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                //Thrown when database update fails
+                throw;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public void UpdateFeed(Feed feed)
+        public int UpdateFeed(Feed feed)
         {
-            throw new NotImplementedException();
+            _dbContext.Entry(feed).State = EntityState.Modified;
+            return _dbContext.SaveChanges();
+        }
+
+        public int GetIdByTitle(string title)
+        {
+            var target = _dbContext.Feeds.FirstOrDefault(i => i.Title == title);
+            if (target == null)
+            {
+                return -1;
+            }
+
+            return target.Id;
         }
 
         protected virtual void Dispose(bool disposing)

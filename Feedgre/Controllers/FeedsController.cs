@@ -17,19 +17,18 @@ namespace Feedgre.Controllers
 {
     [Produces("application/json")]
     [Route("api/feeds")]
-    public class FeedController : Controller
+    public class FeedsController : Controller
     {
         private readonly IFeedParser _rssParser;
         private readonly IFeedParser _atomParser;
         private readonly IFeedRepository _repository;
         private IMemoryCache _cache;
-        private readonly ILogger _logger;
+        private readonly ILogger<FeedsController> _logger;
 
-        public FeedController(IParserFactory parserFactory, IFeedRepository repository, IMemoryCache memoryCache, ILogger<FeedController> logger)
+        public FeedsController(IParserFactory parserFactory, IFeedRepository repository, IMemoryCache memoryCache, ILogger<FeedsController> logger)
         {
-            //var services = serviceProvider.GetServices<IFeedParser>();
-            _rssParser = parserFactory.CreateParser(FeedType.RSS);//services.First(o => o.GetType() == typeof(RssParser));
-            _atomParser = parserFactory.CreateParser(FeedType.Atom);//services.First(o => o.GetType() == typeof(AtomParser));
+            _rssParser = parserFactory.CreateParser(FeedType.RSS);
+            _atomParser = parserFactory.CreateParser(FeedType.Atom);
             _repository = repository;
             _cache = memoryCache;
             _logger = logger;
@@ -91,20 +90,74 @@ namespace Feedgre.Controllers
         
         // POST: api/feeds
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IActionResult CreateFeed(Feed item)
         {
+            if (item == null)
+            {
+                _logger.LogError("Failed to create feed");
+                return BadRequest();
+            }
+
+            try
+            {
+                _repository.CreateFeed(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to create feed due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            var itemId = _repository.GetIdByTitle(item.Title);
+            _logger.LogInformation("Feed {feedTitle} is successfully created with id {id}", item.Title, itemId);
+            return Ok(itemId);
         }
         
         // PUT: api/feeds/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]Feed item)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed to update feed due to the model problems");
+                return BadRequest(ModelState);
+            }
+
+            if (id != item.Id)
+            {
+                _logger.LogError("Failed to update feed due to the id mismatch");
+                return BadRequest();
+            }
+            try
+            {
+                _repository.UpdateFeed(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to update feed due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            _logger.LogInformation("Feed {id} is successfully updated", id);
+            return Ok();
         }
         
         // DELETE: api/feeds/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteFeed(int id)
         {
+            try
+            {
+                _repository.DeleteFeed(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to delete feed due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            _logger.LogInformation("Feed {id} is successfully deleted", id);
+            return Ok();
         }
     }
 }

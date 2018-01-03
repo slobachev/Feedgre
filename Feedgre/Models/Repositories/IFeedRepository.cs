@@ -9,9 +9,10 @@ namespace Feedgre.Models.Repositories
     {
         IEnumerable<Feed> GetFeeds();
         Feed GetFeedByID(int feedId);
-        void InsertFeed(Feed feed);
-        void DeleteFeed(int feedID);
-        void UpdateFeed(Feed feed);
-        void Save();
+        int CreateFeed(Feed feed);
+        int DeleteFeed(int feedID);
+        int UpdateFeed(Feed feed);
+        int GetIdByTitle(string title);
+        int Save();
     }
 }

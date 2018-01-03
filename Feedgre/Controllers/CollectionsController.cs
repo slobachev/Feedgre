@@ -106,7 +106,7 @@ namespace Feedgre.Controllers
 
         // POST: api/collections/1
         [HttpPost("{id}")]
-        public IActionResult AddFeed([FromRoute]int id, int feedId)
+        public IActionResult AddFeed(int id, int feedId)
         {
             var feeds = _repository.GetFeeds(id);
             var feed = feeds.FirstOrDefault(i => i.Id == feedId);
@@ -116,15 +116,23 @@ namespace Feedgre.Controllers
                 return RedirectToRoute("");
             }
 
-            _repository.Subscribe(id, feedId);
-            _repository.Save();
-            _logger.LogInformation("Subscribed the {collectionId} collection to {feedTitle} feed", feedId, feed.Title);
+            try
+            {
+                _repository.Subscribe(id, feedId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to subscribe due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            _logger.LogInformation("Subscribed the collection {collectionId} to {feedTitle} feed", feedId, feed.Title);
             return Ok(feedId);
         }
 
         // POST: api/collections
         [HttpPost]
-        public IActionResult Post(FeedCollection item)
+        public IActionResult CreateCollection(FeedCollection item)
         {
             if (item == null)
             {
@@ -132,8 +140,16 @@ namespace Feedgre.Controllers
                 return BadRequest();
             }
 
-            _repository.InsertCollection(item);
-            _repository.Save();
+            try
+            {
+                _repository.CreateCollection(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to create collection due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
             var itemId = _repository.GetIdByTitle(item.Title);
             _logger.LogInformation("Collection {collectionTitle} is successfully created with id {id}", item.Title, itemId);
             return Ok(itemId);
@@ -141,15 +157,49 @@ namespace Feedgre.Controllers
 
         // PUT: api/collections/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]FeedCollection item)
+        public IActionResult UpdateCollection(int id, [FromBody]FeedCollection item)
         {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Failed to update collection due to the model problems");
+                return BadRequest(ModelState);
+            }
+
+            if (id != item.Id)
+            {
+                _logger.LogError("Failed to update collection due to the id mismatch");
+                return BadRequest();
+            }
+            try
+            {
+                _repository.UpdateCollection(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to update collection due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            _logger.LogInformation("Collection {id} is successfully updated", id);
+            return Ok();
         }
 
         // DELETE: api/collections/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult DeleteCollection(int id)
         {
+            try
+            {
+                _repository.DeleteCollection(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to delete collection due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
 
+            _logger.LogInformation("Collection {id} is successfully deleted", id);
+            return Ok();
         }
     }
 }
