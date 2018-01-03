@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Feedgre.Services.Parsing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Feedgre.Services.Parsing.Interfaces;
 
 namespace Feedgre.Controllers
 {
@@ -23,11 +24,10 @@ namespace Feedgre.Controllers
         private readonly ILogger<CollectionsController> _logger;
         private IMemoryCache _cache;
 
-        public CollectionsController(IServiceProvider serviceProvider, IFeedCollectionRepository repository, IMemoryCache memoryCache, ILogger<CollectionsController> logger)
+        public CollectionsController(IParserFactory parserFactory, IFeedCollectionRepository repository, IMemoryCache memoryCache, ILogger<CollectionsController> logger)
         {
-            var services = serviceProvider.GetServices<IFeedParser>();
-            _rssParser = services.First(o => o.GetType() == typeof(RssParser));
-            _atomParser = services.First(o => o.GetType() == typeof(AtomParser));
+            _rssParser = parserFactory.CreateParser(FeedType.RSS);
+            _atomParser = parserFactory.CreateParser(FeedType.Atom);
             _repository = repository;
             _logger = logger;
             _cache = memoryCache;

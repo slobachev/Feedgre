@@ -12,6 +12,7 @@ using Feedgre.Models;
 using Microsoft.EntityFrameworkCore;
 using Feedgre.Models.Repositories;
 using Feedgre.Services.Parsing;
+using Feedgre.Services.Parsing.Interfaces;
 
 namespace Feedgre
 {
@@ -40,6 +41,7 @@ namespace Feedgre
             services.AddTransient<IFeedCollectionRepository, FeedCollectionRepository>();
             services.AddTransient<IFeedRepository, FeedRepository>();
             services.AddTransient<IServiceProvider, ServiceProvider>();
+            services.AddSingleton<IParserFactory, ParserFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
