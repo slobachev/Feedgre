@@ -1,5 +1,8 @@
 ﻿namespace Feedgre.Models
 {
+    /// <summary>
+    /// Represents a feed source
+    /// </summary>
     public class Feed
     {
         public int Id { get; set; }

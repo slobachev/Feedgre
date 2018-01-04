@@ -10,6 +10,9 @@ using Feedgre.Services.Parsing.Interfaces;
 
 namespace Feedgre.Controllers
 {
+    /// <summary>
+    /// Controller to manipulate feeds via REST requests
+    /// </summary>
     [Produces("application/json")]
     [Route("api/feeds")]
     public class FeedsController : Controller
@@ -29,7 +32,10 @@ namespace Feedgre.Controllers
             _logger = logger;
         }
 
-        // GET: api/feeds
+        /// <summary>
+        /// GET: api/feeds
+        /// </summary>
+        /// <returns>OkResult with  IEnumerable<Feed></returns>
         [HttpGet]
         public IActionResult Get()
         {
@@ -37,7 +43,14 @@ namespace Feedgre.Controllers
             return Ok(_repository.GetFeeds());
         }
 
-        // GET: api/feeds/id
+
+
+        /// <summary>
+        /// Retrieves parsed feed items of a feed
+        /// GET: api/feeds/id
+        /// </summary>
+        /// <param name="id">A feed id</param>
+        /// <returns>OkResult with  IList<FeedItem>, NotFound or BadRequest</returns>
         [HttpGet("{id}")]
         public IActionResult GetFeed(int id)
         {
@@ -82,8 +95,12 @@ namespace Feedgre.Controllers
             }
             return Ok(feedItems);
         }
-        
-        // POST: api/feeds
+
+        /// <summary>
+        ///  POST: api/feeds
+        /// </summary>
+        /// <param name="item">A feed item</param>
+        /// <returns>OkResult with an item id or BadRequest</returns>
         [HttpPost]
         public IActionResult CreateFeed([FromBody]Feed item)
         {
@@ -107,8 +124,13 @@ namespace Feedgre.Controllers
             _logger.LogInformation("Feed {feedTitle} is successfully created with id {id}", item.Title, itemId);
             return Ok(itemId);
         }
-        
-        // PUT: api/feeds/5
+
+        /// <summary>
+        ///  PUT: api/feeds/5
+        /// </summary>
+        /// <param name="id">A feed id</param>
+        /// <param name="item">A feed item</param>
+        /// <returns>OkResult or BadRequest</returns>
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody]Feed item)
         {
@@ -136,8 +158,13 @@ namespace Feedgre.Controllers
             _logger.LogInformation("Feed {id} is successfully updated", id);
             return Ok();
         }
-        
-        // DELETE: api/feeds/5
+
+
+        /// <summary>
+        ///  DELETE: api/feeds/5
+        /// </summary>
+        /// <param name="id">A feed id</param>
+        /// <returns>OkResult or BadRequest</returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteFeed(int id)
         {

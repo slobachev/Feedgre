@@ -9,7 +9,7 @@ namespace Feedgre.Services.Parsing
     public class RssParser : IFeedParser
     {
         /// <summary>
-        /// Parses an RSS feed and returns a <see cref="IList&amp;lt;Item&amp;gt;"/>.
+        /// Parses an RSS feed and returns a feed items List.
         /// </summary>
         public virtual IList<FeedItem> ParseFeed(string url)
         {

@@ -27,11 +27,12 @@ namespace Feedgre
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. It's used to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
 
+            //Add third-party Auth0 jwt authentication 
             string domain = $"https://{Configuration["Auth0:Domain"]}/";
             services.AddAuthentication(options =>
             {
@@ -44,6 +45,7 @@ namespace Feedgre
                 options.Audience = Configuration["Auth0:ApiIdentifier"];
             });
 
+            //Add authorization
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("read:collections", policy => policy.Requirements.Add(new HasScopeRequirement("read:collections", domain)));
@@ -65,7 +67,7 @@ namespace Feedgre
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. It's used to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())

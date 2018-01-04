@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Feedgre.Models.Repositories
 {
+    /// <summary>
+    /// Repository to manipulate feed collections implementing IFeedCollectionRepository
+    /// </summary>
     public class FeedCollectionRepository : IFeedCollectionRepository
     {
 
@@ -27,6 +30,7 @@ namespace Feedgre.Models.Repositories
 
         public IEnumerable<Feed> GetFeeds(int id)
         {
+            //Retrieve appropriate feeds for the collection
             var feeds = (from F in _dbContext.Feeds
                          join S in _dbContext.Subscriptions on F.Id equals S.FeedId
                          join FC in _dbContext.FeedCollection on S.CollectionId equals FC.Id

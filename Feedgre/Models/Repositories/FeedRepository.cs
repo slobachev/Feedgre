@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Feedgre.Models.Repositories
 {
+    /// <summary>
+    /// Repository to manipulate feeds implementing IFeedRepository
+    /// </summary>
     public class FeedRepository : IFeedRepository
     {
         private FeedDBContext _dbContext;
@@ -75,6 +78,7 @@ namespace Feedgre.Models.Repositories
             return target.Id;
         }
 
+        //Disposing
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)

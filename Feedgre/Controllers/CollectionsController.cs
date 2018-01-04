@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Feedgre.Controllers
 {
+    /// <summary>
+    /// Controller to manipulate feed collections via REST requests
+    /// </summary>
     [Produces("application/json")]
     [Route("api/collections")]
     public class CollectionsController : Controller
@@ -30,7 +33,12 @@ namespace Feedgre.Controllers
             _logger = logger;
             _cache = memoryCache;
         }
-        // GET: api/collections
+
+        /// <summary>
+        ///  Gets collections
+        ///  GET: api/collections
+        /// </summary>
+        /// <returns>OkResult with item IEnumerable<FeedCollection></returns>
         [HttpGet]
         [Authorize("read:collections")]
         public IActionResult Get()
@@ -39,7 +47,12 @@ namespace Feedgre.Controllers
             return Ok(_repository.GetFeedCollections());
         }
 
-        // GET: api/collections/5
+        /// <summary>
+        ///  Gets feeds in a collection
+        ///  GET: api/collections/5
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <returns>OkResult with item IEnumerable<Feed> or NotFoundt</returns>
         [HttpGet("{id}")]
         [Authorize("read:collections")]
         public IActionResult Get(int id)
@@ -53,7 +66,12 @@ namespace Feedgre.Controllers
             return Ok(feeds);
         }
 
-        // GET: api/collections/5/all
+        /// <summary>
+        ///  Gets feed items from all feeds in a collection
+        ///  GET: api/collections/5/all
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <returns>OkResult with item List<FeedItem>, NotFound or BadRequest</returns>
         [HttpGet("{id}/all")]
         [Authorize("read:collections")]
         public IActionResult GetAllFeed(int id)
@@ -105,7 +123,13 @@ namespace Feedgre.Controllers
             return Ok(feedItems);
         }
 
-        // POST: api/collections/1
+        /// <summary>
+        /// Subscribes collection to feed
+        ///  POST: api/collections/1
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <param name="feedId">A feed id</param>
+        /// <returns>OkResult, RedirectToRoute or BadRequest</returns>
         [HttpPost("{id}")]
         [Authorize("write:collections")]
         public IActionResult Subscribe(int id, [FromBody]int feedId)
@@ -129,10 +153,16 @@ namespace Feedgre.Controllers
             }
 
             _logger.LogInformation("Subscribed the collection {collectionId} to {feedTitle} feed", feedId, feed.Title);
-            return Ok(feedId);
+            return Ok();
         }
 
-        // POST: api/collections/1/unsubscribe
+        /// <summary>
+        /// Unsubscribes collection from feed
+        ///  POST: api/collections/1/unsubscribe
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <param name="feedId">A feed id</param>
+        /// <returns>OkResult, RedirectToRoute or BadRequest</returns>
         [HttpPost("{id}/unsubscribe")]
         [Authorize("write:collections")]
         public IActionResult Unsubscribe(int id, [FromBody]int feedId)
@@ -156,10 +186,14 @@ namespace Feedgre.Controllers
             }
 
             _logger.LogInformation("Unsubscribed the collection {collectionId} from {feedTitle} feed", feedId, feed.Title);
-            return Ok(feedId);
+            return Ok();
         }
 
-        // POST: api/collections
+        /// <summary>
+        ///  POST: api/collections
+        /// </summary>
+        /// <param name="item">A feed collection item</param>
+        /// <returns>OkResult with item id or BadRequest</returns>
         [HttpPost]
         [Authorize("write:collections")]
         public IActionResult CreateCollection([FromBody]FeedCollection item)
@@ -185,7 +219,13 @@ namespace Feedgre.Controllers
             return Ok(itemId);
         }
 
-        // PUT: api/collections/5
+
+        /// <summary>
+        ///  PUT: api/collections/1
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <param name="item">A feed collection item</param>
+        /// <returns>OkResult or BadRequest</returns>
         [HttpPut("{id}")]
         [Authorize("write:collections")]
         public IActionResult UpdateCollection(int id, [FromBody]FeedCollection item)
@@ -215,7 +255,11 @@ namespace Feedgre.Controllers
             return Ok();
         }
 
-        // DELETE: api/collections/5
+        /// <summary>
+        ///  DELETE: api/collections/1
+        /// </summary>
+        /// <param name="id">A feed collection id</param>
+        /// <returns>OkResult or BadRequest</returns>
         [HttpDelete("{id}")]
         [Authorize("write:collections")]
         public IActionResult DeleteCollection(int id)
