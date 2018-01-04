@@ -1,9 +1,5 @@
 ﻿using Feedgre.Models;
 using Feedgre.Services.Parsing.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Feedgre.Services.Parsing
 {

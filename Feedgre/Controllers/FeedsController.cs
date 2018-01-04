@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Feedgre.Models;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.DependencyInjection;
 using Feedgre.Models.Repositories;
 using Feedgre.Services.Parsing;
 using Microsoft.Extensions.Caching.Memory;

@@ -1,7 +1,4 @@
-﻿
-using Feedgre.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
 
