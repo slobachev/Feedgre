@@ -90,7 +90,7 @@ namespace Feedgre.Controllers
         
         // POST: api/feeds
         [HttpPost]
-        public IActionResult CreateFeed(Feed item)
+        public IActionResult CreateFeed([FromBody]Feed item)
         {
             if (item == null)
             {

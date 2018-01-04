@@ -15,7 +15,7 @@ namespace Feedgre.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Filename=Feed.db");
+            optionsBuilder.UseSqlite("Filename=App_Data/Feed.db");
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Feedgre.Controllers
 
         // GET: api/collections/5
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize("read:collections")]
         public IActionResult Get(int id)
         {
             var feeds = _repository.GetFeeds(id);
@@ -58,7 +58,7 @@ namespace Feedgre.Controllers
 
         // GET: api/collections/5/all
         [HttpGet("{id}/all")]
-        [Authorize]
+        [Authorize("read:collections")]
         public IActionResult GetAllFeed(int id)
         {
             var feeds = _repository.GetFeeds(id);
@@ -111,13 +111,13 @@ namespace Feedgre.Controllers
         // POST: api/collections/1
         [HttpPost("{id}")]
         [Authorize("write:collections")]
-        public IActionResult AddFeed(int id, int feedId)
+        public IActionResult Subscribe(int id, [FromBody]int feedId)
         {
             var feeds = _repository.GetFeeds(id);
             var feed = feeds.FirstOrDefault(i => i.Id == feedId);
             if (feed != null)
             {
-                _logger.LogError("The collection {collectionId} already subscribed to {feedTitle} feed", feedId, feed.Title);
+                _logger.LogError("The collection {collectionId} is already subscribed to {feedTitle} feed", feedId, feed.Title);
                 return RedirectToRoute("");
             }
 
@@ -135,10 +135,37 @@ namespace Feedgre.Controllers
             return Ok(feedId);
         }
 
+        // POST: api/collections/1/unsubscribe
+        [HttpPost("{id}/unsubscribe")]
+        [Authorize("write:collections")]
+        public IActionResult Unsubscribe(int id, [FromBody]int feedId)
+        {
+            var feeds = _repository.GetFeeds(id);
+            var feed = feeds.FirstOrDefault(i => i.Id == feedId);
+            if (feed == null)
+            {
+                _logger.LogError("The collection {collectionId} is already unsubscribed from {feedTitle} feed", feedId, feed.Title);
+                return RedirectToRoute("");
+            }
+
+            try
+            {
+                _repository.Unsubscribe(id, feedId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to unsubscribe due to the database problems {ex}", ex);
+                return BadRequest(ex);
+            }
+
+            _logger.LogInformation("Unsubscribed the collection {collectionId} from {feedTitle} feed", feedId, feed.Title);
+            return Ok(feedId);
+        }
+
         // POST: api/collections
         [HttpPost]
         [Authorize("write:collections")]
-        public IActionResult CreateCollection(FeedCollection item)
+        public IActionResult CreateCollection([FromBody]FeedCollection item)
         {
             if (item == null)
             {

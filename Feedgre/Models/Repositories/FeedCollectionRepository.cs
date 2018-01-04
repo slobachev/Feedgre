@@ -72,18 +72,31 @@ namespace Feedgre.Models.Repositories
             return _dbContext.SaveChanges();
         }
 
+        public int Unsubscribe(int collectionId, int feedId)
+        {
+            var subscription = _dbContext.Subscriptions
+                .AsNoTracking()
+                .FirstOrDefault(s => s.CollectionId == collectionId && s.FeedId == feedId);
+
+            _dbContext.Entry(new Subscription()
+            {
+                Id = subscription.Id
+            }).State = EntityState.Deleted;
+            return _dbContext.SaveChanges();
+        }
+
         public int Save()
         {
             try
             {
                 return _dbContext.SaveChanges();
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 //Thrown when database update fails
                 throw;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
